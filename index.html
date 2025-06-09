@@ -1,0 +1,86 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Please party?</title>
+    <style>
+      html,
+      body {
+        background: radial-gradient(white, black);
+        margin: 0;
+        background-size: cover;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+      }
+
+      h1 {
+        font-size: 5em;
+        z-index: 1;
+      }
+
+      .container {
+        color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .pulse {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: zoomOut 7s linear infinite;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      @keyframes zoomOut {
+        0% {
+          width: 0;
+          height: 0;
+        }
+        90% {
+          opacity: 0.6;
+        }
+        100% {
+          width: 100vmax;
+          height: 100vmax;
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="gradient-container">
+      <h1>&#128591;&#127881;?</h1>
+    </div>
+
+    <script>
+      const colors = [
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "blue",
+        "indigo",
+        "purple",
+      ];
+      const container = document.getElementById("gradient-container");
+
+      colors.forEach((color, index) => {
+        const div = document.createElement("div");
+        div.className = "pulse";
+        div.style.animationDelay = `${index * 1}s`;
+        div.style.background = `radial-gradient(circle, transparent 0%, ${color} 50%, transparent  100%)`;
+        container.appendChild(div);
+      });
+    </script>
+  </body>
+</html>
