@@ -189,8 +189,7 @@
       // Set animation timing and a random horizontal speed
       span.style.animationDuration = `${Math.random() * 4 + 6}s`;
 
-      // Handle popping
-      span.addEventListener("click", (e) => {
+      const handlePress = (e) => {
         e.stopPropagation();
 
         // Prevent further clicks
@@ -253,7 +252,11 @@
           spread: 1000,
           origin: { x, y },
         });
-      });
+      };
+
+      // Handle popping
+      span.addEventListener("click", handlePress);
+      span.addEventListener("ontouchstart", handlePress);
 
       document.body.appendChild(span);
 
