@@ -5,6 +5,16 @@
     <link rel="icon" href="/assets/favicon/favicon.ico" />
     <title>Please party?</title>
     <style>
+      * {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, and Edge */
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight color on mobile */
+        box-sizing: border-box;
+      }
       html,
       body {
         background: radial-gradient(white, black);
@@ -85,4 +95,14 @@
       });
     </script>
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    window.addEventListener("click", () => {
+      confetti({
+        particleCount: 100,
+        spread: 700,
+        origin: { y: 0.5 },
+      });
+    });
+  </script>
 </html>
