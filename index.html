@@ -53,6 +53,65 @@
         pointer-events: none;
       }
 
+      .emoji {
+        position: absolute;
+        font-size: 5em;
+        top: 0;
+        animation: float 20s linear forwards;
+        opacity: 0.9;
+        cursor: pointer;
+        pointer-events: auto;
+        z-index: 2;
+        transform-origin: center;
+        filter: drop-shadow(0 0 0.5em rgba(255, 255, 255, 0.5));
+        transition: transform 0.1s ease-out;
+      }
+
+      .pop-flash {
+        position: fixed;
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        pointer-events: none;
+        z-index: 1;
+        animation: flash 300ms ease-out forwards;
+      }
+
+      @keyframes flash {
+        0% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(3);
+          opacity: 0;
+        }
+      }
+
+      @keyframes pop {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
+
+      .pop {
+        animation: pop 300ms ease-out forwards !important;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(100vh);
+        }
+        100% {
+          transform: translateY(-10vh);
+        }
+      }
+
       @keyframes zoomOut {
         0% {
           width: 0;
@@ -73,6 +132,11 @@
     <div class="container" id="gradient-container">
       <h1>&#128591;&#127881;?</h1>
     </div>
+    <audio
+      id="party-sound"
+      src="/assets/audio/party.wav"
+      preload="auto"
+    ></audio>
 
     <script>
       const colors = [
@@ -97,12 +161,104 @@
   </body>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script>
-    window.addEventListener("click", () => {
-      confetti({
-        particleCount: 100,
-        spread: 700,
-        origin: { y: 0.5 },
+    const emojis = [
+      "🎈",
+      "🪩",
+      "🎶",
+      "✨",
+      "🎉",
+      "🥳",
+      "🎊",
+      "💃",
+      "🕺",
+      "🎤",
+      "🎸",
+      "🎷",
+      "🎺",
+      "🥁",
+    ];
+
+    const sound = document.getElementById("party-sound");
+
+    setInterval(() => {
+      const span = document.createElement("span");
+      span.className = "emoji";
+      span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      span.style.left = `${Math.random() * 100}vw`;
+
+      // Set animation timing and a random horizontal speed
+      span.style.animationDuration = `${Math.random() * 4 + 6}s`;
+
+      // Handle popping
+      span.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        // Prevent further clicks
+        span.style.pointerEvents = "none";
+
+        // Get current position
+        const rect = span.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Lock it in place
+        span.style.position = "fixed";
+        span.style.left = `${rect.left}px`;
+        span.style.top = `${rect.top}px`;
+        span.style.transform = "none";
+        span.style.animation = "pop 300ms ease-out forwards";
+
+        // Add pop flash
+        const flash = document.createElement("div");
+
+        // Generate random RGB values
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+
+        // Optional: generate a second random color for inner-to-outer blend
+        const r2 = Math.floor(Math.random() * 256);
+        const g2 = Math.floor(Math.random() * 256);
+        const b2 = Math.floor(Math.random() * 256);
+
+        // Create the pop flash div
+        flash.className = "pop-flash";
+        flash.style.left = `${centerX - 50}px`;
+        flash.style.top = `${centerY - 50}px`;
+
+        // Apply a random radial gradient
+        flash.style.background = `radial-gradient(circle, rgba(${r},${g},${b},1), rgba(${r2},${g2},${b2},1) 70%)`;
+
+        document.body.appendChild(flash);
+
+        setTimeout(() => {
+          span.remove();
+          flash.remove();
+        }, 300);
+
+        // Play pop sound
+        try {
+          sound.currentTime = 0;
+          sound.play();
+        } catch (err) {
+          console.warn("Audio play failed:", err);
+        }
+
+        // Confetti at the click location
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+
+        confetti({
+          particleCount: 100,
+          spread: 1000,
+          origin: { x, y },
+        });
       });
-    });
+
+      document.body.appendChild(span);
+
+      // Remove after float ends just in case
+      setTimeout(() => span.remove(), 11000);
+    }, 500);
   </script>
 </html>
